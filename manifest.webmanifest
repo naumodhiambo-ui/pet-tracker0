@@ -1,8 +1,8 @@
 {
   "id": "./app.html",
-  "name": "SmartPet Owner Dashboard",
+  "name": "SmartPet Browser Demo",
   "short_name": "SmartPet",
-  "description": "Pet profiles, tracker status, telemetry and alerts.",
+  "description": "A browser-only demo for local pet profiles and illustrative readings.",
   "start_url": "./app.html",
   "scope": "./",
   "display": "standalone",

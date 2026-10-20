@@ -25,26 +25,21 @@
       <div class="auth-copy">
         <p class="eyebrow">YOUR PET, IN VIEW</p>
         <h1>More peace of mind, wherever they roam.</h1>
-        <p class="lead">A simple home for your pet’s profile, tracker status, activity history and alerts.</p>
-        <div class="auth-note"><span class="note-icon">✦</span><span>Sign in to view your pet profiles and any tracker data received by the SmartPet API.</span></div>
+        <p class="lead">A simple place to organize a pet profile and explore the SmartPet dashboard.</p>
+        <div class="auth-note"><span class="note-icon">✦</span><span>Standalone demo: no account or server required. Your demo data stays in this browser.</span></div>
       </div>
       <div class="auth-card">
-        <div class="auth-tabs" role="tablist"><button class="auth-tab active" id="login-tab" role="tab" aria-selected="true">Sign in</button><button class="auth-tab" id="signup-tab" role="tab" aria-selected="false">Create account</button></div>
         <form id="auth-form" class="form-stack">
-          <div id="name-fields" class="name-fields hidden"><label>First name<input name="first_name" autocomplete="given-name"></label><label>Last name<input name="last_name" autocomplete="family-name"></label></div>
-          <label>Email address<input name="email" type="email" autocomplete="email" required></label>
-          <label>Password<input name="password" type="password" minlength="8" autocomplete="current-password" required></label>
-          <button class="button button-primary button-wide" type="submit" id="auth-submit">Sign in <span aria-hidden="true">→</span></button>
-          <p class="form-help">Your account connects to the SmartPet API you configure below.</p>
+          <p class="form-help">Open the dashboard to try local pet profiles and clearly marked sample readings.</p>
+          <button class="button button-primary button-wide" type="submit" id="auth-submit">Open dashboard <span aria-hidden="true">→</span></button>
         </form>
-        <details class="api-settings"><summary>API connection</summary><label>Backend URL<input id="api-url" type="url" placeholder="http://localhost:8000" autocomplete="url"></label><p>For an Android emulator use <code>http://10.0.2.2:8000</code>. The web app and API must be served over HTTPS in production.</p></details>
         <p id="auth-error" class="message error hidden" role="alert"></p>
       </div>
     </section>
 
     <section id="dashboard-view" class="dashboard hidden">
       <div class="welcome-row"><div><p class="eyebrow">SMARTPET OWNER DASHBOARD</p><h1 id="greeting">Welcome back.</h1><p class="muted">Here’s how your companion is doing.</p></div><button id="refresh-button" class="button button-secondary" type="button"><span aria-hidden="true">↻</span> Refresh</button></div>
-      <div id="notice" class="notice hidden" role="status"></div>
+      <div id="notice" class="notice" role="status">Standalone demo · sample readings only · no tracker is connected. Pet profiles are saved in this browser.</div>
       <div class="dashboard-grid">
         <section class="panel pet-panel">
           <div class="panel-heading"><div><p class="eyebrow">YOUR PETS</p><h2>Pet profiles</h2></div><button id="add-pet-button" class="button button-primary" type="button">+ Add pet</button></div>
@@ -66,7 +61,7 @@
           <div id="alert-list" class="alert-list"><p class="muted">No alerts yet.</p></div>
         </section>
       </div>
-      <p class="safety-copy">Telemetry is shown from the SmartPet API. Command acceptance does not confirm that a broker or tracker received or executed it. This prototype is not a substitute for a validated pet safety device.</p>
+      <p class="safety-copy">This is a browser-only demo. Readings and alerts are examples, and tracker actions are simulations. Data is stored on this device and is not synced to an account or tracker. Do not use it for pet safety decisions.</p>
     </section>
   </main>
   <footer><span>© SmartPet</span><span>Track with care.</span></footer>

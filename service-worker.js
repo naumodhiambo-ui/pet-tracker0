@@ -1,5 +1,5 @@
-const CACHE_NAME = 'smartpet-pwa-v5';
-const APP_SHELL = ['./app.html','./app.css','./app.js','./manifest.webmanifest','./icon.svg','./icon-180.png','./icon-192.png','./icon-512.png'];
+const CACHE_NAME = 'smartpet-pwa-v6';
+const APP_SHELL = ['./index.html','./app.html','./app.css','./app.js','./manifest.webmanifest','./icon.svg','./icon-180.png','./icon-192.png','./icon-512.png'];
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL)).then(() => self.skipWaiting()));
 });
@@ -24,3 +24,4 @@ self.addEventListener('fetch', (event) => {
     }
   })());
 });
+
