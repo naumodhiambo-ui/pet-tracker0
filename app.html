@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#102b27">
+  <meta name="description" content="SmartPet owner dashboard for pet profiles, tracker status, telemetry and alerts.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="SmartPet">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <link rel="stylesheet" href="app.css">
+  <title>SmartPet · Owner dashboard</title>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="app.html" aria-label="SmartPet home"><span class="brand-mark">S</span><span>smartpet<span class="brand-dot">.</span></span></a>
+    <div class="top-actions"><span id="connection" class="connection" aria-live="polite" aria-label="Network status"><i></i> Checking connection</span><button id="install-button" class="button button-quiet hidden" type="button">Install app</button><button id="logout-button" class="button button-quiet hidden" type="button">Sign out</button></div>
+  </header>
+
+  <main>
+    <section id="auth-view" class="auth-layout">
+      <div class="auth-copy">
+        <p class="eyebrow">YOUR PET, IN VIEW</p>
+        <h1>More peace of mind, wherever they roam.</h1>
+        <p class="lead">A simple home for your pet’s profile, tracker status, activity history and alerts.</p>
+        <div class="auth-note"><span class="note-icon">✦</span><span>Sign in to view your pet profiles and any tracker data received by the SmartPet API.</span></div>
+      </div>
+      <div class="auth-card">
+        <div class="auth-tabs" role="tablist"><button class="auth-tab active" id="login-tab" role="tab" aria-selected="true">Sign in</button><button class="auth-tab" id="signup-tab" role="tab" aria-selected="false">Create account</button></div>
+        <form id="auth-form" class="form-stack">
+          <div id="name-fields" class="name-fields hidden"><label>First name<input name="first_name" autocomplete="given-name"></label><label>Last name<input name="last_name" autocomplete="family-name"></label></div>
+          <label>Email address<input name="email" type="email" autocomplete="email" required></label>
+          <label>Password<input name="password" type="password" minlength="8" autocomplete="current-password" required></label>
+          <button class="button button-primary button-wide" type="submit" id="auth-submit">Sign in <span aria-hidden="true">→</span></button>
+          <p class="form-help">Your account connects to the SmartPet API you configure below.</p>
+        </form>
+        <details class="api-settings"><summary>API connection</summary><label>Backend URL<input id="api-url" type="url" placeholder="http://localhost:8000" autocomplete="url"></label><p>For an Android emulator use <code>http://10.0.2.2:8000</code>. The web app and API must be served over HTTPS in production.</p></details>
+        <p id="auth-error" class="message error hidden" role="alert"></p>
+      </div>
+    </section>
+
+    <section id="dashboard-view" class="dashboard hidden">
+      <div class="welcome-row"><div><p class="eyebrow">SMARTPET OWNER DASHBOARD</p><h1 id="greeting">Welcome back.</h1><p class="muted">Here’s how your companion is doing.</p></div><button id="refresh-button" class="button button-secondary" type="button"><span aria-hidden="true">↻</span> Refresh</button></div>
+      <div id="notice" class="notice hidden" role="status"></div>
+      <div class="dashboard-grid">
+        <section class="panel pet-panel">
+          <div class="panel-heading"><div><p class="eyebrow">YOUR PETS</p><h2>Pet profiles</h2></div><button id="add-pet-button" class="button button-primary" type="button">+ Add pet</button></div>
+          <div id="pet-list" class="pet-list"><div class="skeleton"></div></div>
+          <form id="pet-form" class="inline-form hidden"><label>Pet name<input name="name" required maxlength="80" placeholder="e.g. Momo"></label><label>Breed<input name="breed" maxlength="100" placeholder="Optional"></label><button class="button button-primary" type="submit">Save pet</button><button id="cancel-pet" class="button button-quiet" type="button">Cancel</button></form>
+        </section>
+        <section class="panel tracker-panel">
+          <div class="panel-heading"><div><p class="eyebrow">TRACKER</p><h2>Device status</h2></div><span id="device-status" class="status-badge status-muted">Not paired</span></div>
+          <div id="device-content" class="empty-state"><span class="empty-icon">⌁</span><h3>Connect a tracker</h3><p>Pair a device to view its battery, last check-in and telemetry.</p><button id="pair-button" class="button button-secondary" type="button">Pair tracker</button></div>
+          <form id="pair-form" class="inline-form hidden"><label>Device code<input name="device_code" required minlength="3" maxlength="64" placeholder="SP-0001"></label><button class="button button-primary" type="submit">Pair device</button><button id="cancel-pair" class="button button-quiet" type="button">Cancel</button></form>
+        </section>
+        <section class="panel telemetry-panel">
+          <div class="panel-heading"><div><p class="eyebrow">LATEST CHECK-IN</p><h2>Activity & location</h2></div><span id="data-label" class="data-label">Waiting for data</span></div>
+          <div id="telemetry-content" class="telemetry-empty"><div class="empty-icon">⌖</div><p>Telemetry will appear here when the device sends its first check-in.</p></div>
+          <div id="telemetry-metrics" class="metrics hidden"></div>
+        </section>
+        <section class="panel alerts-panel">
+          <div class="panel-heading"><div><p class="eyebrow">UPDATES</p><h2>Recent alerts</h2></div><span id="alert-count" class="count-badge">0</span></div>
+          <div id="alert-list" class="alert-list"><p class="muted">No alerts yet.</p></div>
+        </section>
+      </div>
+      <p class="safety-copy">Telemetry is shown from the SmartPet API. Command acceptance does not confirm that a broker or tracker received or executed it. This prototype is not a substitute for a validated pet safety device.</p>
+    </section>
+  </main>
+  <footer><span>© SmartPet</span><span>Track with care.</span></footer>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="app.js" defer></script>
+</body>
+</html>

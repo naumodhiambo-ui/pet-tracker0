@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PATA Smart Pet Tracker · Telemetry & Tracking Ecosystem</title>
+  <meta name="description" content="PATA Smart Pet Tracker — live GPS tracking, health telemetry, geofencing alerts, and community-powered pet recovery. Track. Protect. Love." />
+  <link rel="icon" type="image/svg+xml" href="icon.svg" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f7fafc;
+      --surface: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --accent: #14b8a6;
+      --accent-strong: #0f766e;
+      --accent-soft: #d7f7ef;
+      --border: #e2e8f0;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(180deg, #f8fbff 0%, #f5f8fc 100%);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+    h1, h2, h3, h4, .font-display { font-family: 'Space Grotesk', sans-serif; }
+    a { text-decoration: none; }
+    img { max-width: 100%; }
+
+    /* Layout */
+    .container { margin-left: auto; margin-right: auto; width: 100%; max-width: 80rem; }
+    .grid-2 { display: grid; gap: 3rem; }
+    @media (min-width: 1024px) {
+      .grid-2 { grid-template-columns: 1.05fr 0.95fr; align-items: center; }
+    }
+    .px-section { padding-left: 1rem; padding-right: 1rem; }
+    @media (min-width: 640px) { .px-section { padding-left: 1.5rem; padding-right: 1.5rem; } }
+    @media (min-width: 1024px) { .px-section { padding-left: 2rem; padding-right: 2rem; } }
+    .py-section { padding-top: 4rem; padding-bottom: 4rem; }
+    @media (min-width: 1024px) { .py-section { padding-top: 5rem; padding-bottom: 5rem; } }
+
+    .hero-gradient {
+      background:
+        radial-gradient(circle at 15% 20%, rgba(20, 184, 166, 0.16), transparent 28%),
+        radial-gradient(circle at 85% 15%, rgba(59, 130, 246, 0.12), transparent 24%),
+        linear-gradient(135deg, #f7fcff 0%, #f4f8fb 100%);
+    }
+
+    .glass-card {
+      background: rgba(255,255,255,0.72);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.75);
+    }
+
+    .card-hover {
+      transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 44px rgba(15, 23, 42, 0.08);
+      border-color: rgba(20, 184, 166, 0.3);
+    }
+
+    .scroll-fade {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+    .scroll-fade.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .device-shell {
+      position: relative;
+      border-radius: 32px;
+      background: linear-gradient(160deg, #0f172a 0%, #111827 100%);
+      padding: 16px;
+      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.22);
+    }
+    .device-screen {
+      border-radius: 24px;
+      background: linear-gradient(145deg, #0f172a 0%, #111827 100%);
+      border: 1px solid rgba(255,255,255,0.08);
+      overflow: hidden;
+      position: relative;
+    }
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(20,184,166,0.12);
+      color: #0f766e;
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .timeline-line {
+      position: absolute;
+      left: 50%;
+      top: 32px;
+      bottom: 32px;
+      width: 2px;
+      background: linear-gradient(180deg, rgba(20,184,166,0.6), rgba(20,184,166,0.06));
+      transform: translateX(-50%);
+    }
+    .timeline-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #14b8a6, #0ea5e9);
+      box-shadow: 0 0 0 6px rgba(20,184,166,0.16);
+      flex-shrink: 0;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.8);
+      border: 1px solid rgba(226,232,240,0.9);
+      color: #334155;
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 13px 22px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #14b8a6, #0ea5e9);
+      color: white;
+      font-weight: 700;
+      box-shadow: 0 12px 30px rgba(20,184,166,0.24);
+      transition: transform .2s ease, box-shadow .2s ease;
+      border: 0;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 16px 34px rgba(20,184,166,0.28); }
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 13px 22px;
+      border-radius: 999px;
+      background: white;
+      color: #0f172a;
+      border: 1px solid #e2e8f0;
+      font-weight: 700;
+      transition: transform .2s ease, border-color .2s ease;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .btn-secondary:hover { transform: translateY(-1px); border-color: rgba(20,184,166,0.36); }
+
+    /* Animations */
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    .animate-pulse { animation: pulse-dot 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+
+    /* Utility classes mirroring the original design tokens */
+    .text-center { text-align: center; }
+    .text-left { text-align: left; }
+    @media (min-width: 1024px) { .lg\:text-left { text-align: left; } }
+    @media (min-width: 1024px) { .lg\:justify-start { justify-content: flex-start; } }
+    @media (min-width: 1024px) { .lg\:mx-0 { margin-left: 0; margin-right: 0; } }
+    @media (min-width: 640px) { .sm\:px-6 { padding-left: 1.5rem; padding-right: 1.5rem; } }
+    @media (min-width: 1024px) { .lg\:px-8 { padding-left: 2rem; padding-right: 2rem; } }
+    @media (min-width: 1024px) { .lg\:py-20 { padding-top: 5rem; padding-bottom: 5rem; } }
+    @media (min-width: 640px) { .sm\:p-10 { padding: 2.5rem; } }
+    @media (min-width: 640px) { .sm\:p-8 { padding: 2rem; } }
+    @media (min-width: 640px) { .sm\:p-5 { padding: 1.25rem; } }
+    @media (min-width: 640px) { .sm\:inline-flex { display: inline-flex; } }
+    @media (min-width: 768px) { .md\:p-6 { padding: 1.5rem; } }
+    @media (min-width: 768px) { .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (min-width: 640px) { .sm\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (min-width: 640px) { .sm\:flex-row { flex-direction: row; } }
+    @media (min-width: 640px) { .sm\:items-center { align-items: center; } }
+    @media (min-width: 640px) { .sm\:justify-between { justify-content: space-between; } }
+    .flex { display: flex; }
+    .flex-col { flex-direction: column; }
+    .flex-wrap { flex-wrap: wrap; }
+    .items-center { align-items: center; }
+    .justify-between { justify-content: space-between; }
+    .justify-center { justify-content: center; }
+    .gap-2 { gap: .5rem; }
+    .gap-3 { gap: .75rem; }
+    .gap-4 { gap: 1rem; }
+    .gap-5 { gap: 1.25rem; }
+    .gap-6 { gap: 1.5rem; }
+    .gap-7 { gap: 1.75rem; }
+    .gap-8 { gap: 2rem; }
+    .mt-1 { margin-top: .25rem; }
+    .mt-2 { margin-top: .5rem; }
+    .mt-3 { margin-top: .75rem; }
+    .mt-4 { margin-top: 1rem; }
+    .mt-5 { margin-top: 1.25rem; }
+    .mt-8 { margin-top: 2rem; }
+    .mt-10 { margin-top: 2.5rem; }
+    .mt-12 { margin-top: 3rem; }
+    .mt-14 { margin-top: 3.5rem; }
+    .mb-2 { margin-bottom: .5rem; }
+    .mb-4 { margin-bottom: 1rem; }
+    .mb-5 { margin-bottom: 1.25rem; }
+    .mx-auto { margin-left: auto; margin-right: auto; }
+    .p-3 { padding: .75rem; }
+    .p-4 { padding: 1rem; }
+    .p-5 { padding: 1.25rem; }
+    .p-6 { padding: 1.5rem; }
+    .p-7 { padding: 1.75rem; }
+    .p-8 { padding: 2rem; }
+    .px-2 { padding-left: .5rem; padding-right: .5rem; }
+    .px-2\.5 { padding-left: .625rem; padding-right: .625rem; }
+    .px-4 { padding-left: 1rem; padding-right: 1rem; }
+    .px-5 { padding-left: 1.25rem; padding-right: 1.25rem; }
+    .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .py-1 { padding-top: .25rem; padding-bottom: .25rem; }
+    .py-2 { padding-top: .5rem; padding-bottom: .5rem; }
+    .py-2\.5 { padding-top: .625rem; padding-bottom: .625rem; }
+    .py-3 { padding-top: .75rem; padding-bottom: .75rem; }
+    .py-3\.5 { padding-top: .875rem; padding-bottom: .875rem; }
+    .py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+    .py-5 { padding-top: 1.25rem; padding-bottom: 1.25rem; }
+    .py-8 { padding-top: 2rem; padding-bottom: 2rem; }
+    .py-12 { padding-top: 3rem; padding-bottom: 3rem; }
+    .pl-11 { padding-left: 2.75rem; }
+    .pl-4 { padding-left: 1rem; }
+    .pr-4 { padding-right: 1rem; }
+    .pr-10 { padding-right: 2.5rem; }
+    .pb-20 { padding-bottom: 5rem; }
+    .pt-32 { padding-top: 8rem; }
+    .pt-3 { padding-top: .75rem; }
+    @media (min-width: 640px) { .px-section { padding-left: 1.5rem; padding-right: 1.5rem; } }
+    @media (min-width: 1024px) {
+      .pt-32 { padding-top: 10rem; }
+      .px-section { padding-left: 2rem; padding-right: 2rem; }
+    }
+    .max-w-2xl { max-width: 42rem; }
+    .max-w-5xl { max-width: 64rem; }
+    .max-w-7xl { max-width: 80rem; }
+    .max-w-xl { max-width: 36rem; }
+
+    .w-full { width: 100%; }
+    .h-8 { height: 2rem; }
+    .h-11 { height: 2.75rem; }
+    .h-14 { height: 3.5rem; }
+    .w-8 { width: 2rem; }
+    .w-11 { width: 2.75rem; }
+    .w-13 { width: 3.25rem; }
+    .w-14 { width: 3.5rem; }
+    .h-13 { height: 3.25rem; }
+    .h-4 { height: 1rem; }
+    .h-5 { height: 1.25rem; }
+    .h-2\.5 { height: .625rem; }
+    .w-2\.5 { width: .625rem; }
+    .h-2 { height: .5rem; }
+    .w-2 { width: .5rem; }
+    .h-12 { height: 3rem; }
+    .w-12 { width: 3rem; }
+    .h-10 { height: 2.5rem; }
+    .w-10 { width: 2.5rem; }
+    .h-40 { height: 10rem; }
+    .h-16 { height: 4rem; }
+    .w-16 { width: 4rem; }
+    .h-6 { height: 1.5rem; }
+    .w-6 { width: 1.5rem; }
+    .shrink-0 { flex-shrink: 0; }
+    .flex-1 { flex: 1 1 0%; }
+    .rounded-full { border-radius: 9999px; }
+    .rounded-md { border-radius: .375rem; }
+    .rounded-xl { border-radius: .75rem; }
+    .rounded-2xl { border-radius: 1rem; }
+    .rounded-3xl { border-radius: 1.5rem; }
+    .rounded-\[24px\] { border-radius: 24px; }
+    .rounded-\[28px\] { border-radius: 28px; }
+    .rounded-\[32px\] { border-radius: 32px; }
+    .rounded-\[36px\] { border-radius: 36px; }
+    .rounded-t-xl { border-top-left-radius: .75rem; border-top-right-radius: .75rem; }
+    .border { border-width: 1px; border-style: solid; }
+    .border-t { border-top-width: 1px; border-top-style: solid; }
+    .border-slate-100 { border-color: #f1f5f9; }
+    .border-slate-200 { border-color: #e2e8f0; }
+    .border-slate-200\/60 { border-color: rgba(226,232,240,0.6); }
+    .border-slate-300 { border-color: #cbd5e1; }
+    .border-white\/10 { border-color: rgba(255,255,255,0.1); }
+    .border-white\/15 { border-color: rgba(255,255,255,0.15); }
+    .border-teal-100 { border-color: #ccfbf1; }
+    .border-teal-200 { border-color: #99f6e4; }
+    .border-teal-200\/70 { border-color: rgba(153,246,228,0.7); }
+    .border-dashed { border-style: dashed; }
+    .shadow-sm { box-shadow: 0 1px 3px 0 rgba(0,0,0,0.08); }
+    .shadow-md { box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+
+    /* Typography */
+    .text-xs { font-size: .75rem; line-height: 1rem; }
+    .text-sm { font-size: .875rem; line-height: 1.25rem; }
+    .text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+    .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+    .text-2xl { font-size: 1.5rem; line-height: 2rem; }
+    .text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+    .text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
+    @media (min-width: 640px) { .sm\:text-4xl { font-size: 2.25rem; line-height: 2.5rem; } }
+    @media (min-width: 640px) { .text-4xl { font-size: 3rem; line-height: 1.125; } }
+    .text-5xl { font-size: 3rem; line-height: 1.125; }
+    @media (min-width: 1024px) {
+      .text-4xl { font-size: 3.75rem; line-height: 1.125; }
+      .sm\:text-5xl { font-size: 3rem; line-height: 1.125; }
+      .text-5xl { font-size: 3.75rem; line-height: 1.125; }
+      .lg\:text-6xl { font-size: 3.75rem; line-height: 1.125; }
+    }
+    @media (min-width: 640px) { .sm\:text-5xl { font-size: 3rem; line-height: 1.125; } }
+    .font-medium { font-weight: 500; }
+    .font-semibold { font-weight: 600; }
+    .font-bold { font-weight: 700; }
+    .tracking-wide { letter-spacing: .025em; }
+    .tracking-wider { letter-spacing: .05em; }
+    .leading-7 { line-height: 1.75rem; }
+    .leading-8 { line-height: 2rem; }
+    .leading-\[1\.05\] { line-height: 1.05; }
+    .leading-relaxed { line-height: 1.625; }
+
+    .text-slate-900 { color: #0f172a; }
+    .text-slate-800 { color: #1e293b; }
+    .text-slate-700 { color: #334155; }
+    .text-slate-600 { color: #475569; }
+    .text-slate-500 { color: #64748b; }
+    .text-slate-400 { color: #94a3b8; }
+    .text-slate-200 { color: #e2e8f0; }
+    .text-slate-100 { color: #f1f5f9; }
+    .text-teal-200 { color: #99f6e4; }
+    .text-teal-300 { color: #5eead4; }
+    .text-teal-600 { color: #0d9488; }
+    .text-teal-700 { color: #0f766e; }
+    .text-white { color: #fff; }
+    .text-transparent { color: transparent; }
+    .text-sky-500 { color: #0ea5e9; }
+    .bg-slate-50 { background-color: #f8fafc; }
+    .bg-white { background-color: #fff; }
+    .bg-teal-50 { background-color: #f0fdfa; }
+    .bg-teal-500 { background-color: #14b8a6; }
+    .bg-teal-400 { background-color: #2dd4bf; }
+    .bg-gradient-to-t { background-image: linear-gradient(to top, var(--tw-gradient-stops)); }
+    .bg-gradient-to-r { background-image: linear-gradient(to right, var(--tw-gradient-stops)); }
+    .bg-gradient-to-br { background-image: linear-gradient(to bottom right, var(--tw-gradient-stops)); }
+    .bg-clip-text { -webkit-background-clip: text; background-clip: text; }
+    .uppercase { text-transform: uppercase; }
+    .lowercase { text-transform: lowercase; }
+    .tracking-\[0\.3em\] { letter-spacing: .3em; }
+    .tracking-\[0\.32em\] { letter-spacing: .32em; }
+    .tracking-\[0\.04em\] { letter-spacing: .04em; }
+    .text-\[10px\] { font-size: 10px; }
+    .text-\[11px\] { font-size: 11px; }
+
+    /* Gradients */
+    .from-teal-500 { --tw-gradient-from: #14b8a6; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(20,184,166,0)); }
+    .to-cyan-500 { --tw-gradient-to: #06b6d4; }
+    .to-cyan-400 { --tw-gradient-to: #22d3ee; }
+    .from-rose-500 { --tw-gradient-from: #f43f5e; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(244,63,94,0)); }
+    .to-pink-500 { --tw-gradient-to: #ec4899; }
+    .from-amber-500 { --tw-gradient-from: #f59e0b; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(245,158,11,0)); }
+    .to-orange-500 { --tw-gradient-to: #f97316; }
+    .from-indigo-500 { --tw-gradient-from: #6366f1; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(99,102,241,0)); }
+    .to-violet-500 { --tw-gradient-to: #8b5cf6; }
+    .from-emerald-500 { --tw-gradient-from: #10b981; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(16,185,129,0)); }
+    .to-lime-500 { --tw-gradient-to: #84cc16; }
+    .from-sky-500 { --tw-gradient-from: #0ea5e9; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(14,165,233,0)); }
+    .to-blue-500 { --tw-gradient-to: #3b82f6; }
+    .from-cyan-400\/20 { --tw-gradient-from: rgba(34,211,238,0.2); --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(34,211,238,0)); }
+    .from-teal-500\/20 { --tw-gradient-from: rgba(20,184,166,0.2); --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(20,184,166,0)); }
+    .from-teal-50\/80 { --tw-gradient-from: rgba(240,253,250,0.8); --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(240,253,250,0)); }
+    .via-white { --tw-gradient-via: #fff; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-via), var(--tw-gradient-to, rgba(255,255,255,0)); }
+    .from-slate-900 { --tw-gradient-from: #0f172a; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(15,23,42,0)); }
+    .to-sky-50\/80 { --tw-gradient-to: rgba(240,249,255,0.8); }
+    .bg-teal-50\/80 { background-color: rgba(240,253,250,0.8); }
+
+    /* Backgrounds (rgba, dark surfaces) */
+    .bg-slate-900\/80 { background-color: rgba(15,23,42,0.8); }
+    .bg-white\/10 { background-color: rgba(255,255,255,0.1); }
+    .bg-white\/15 { background-color: rgba(255,255,255,0.15); }
+    .bg-white\/5 { background-color: rgba(255,255,255,0.05); }
+    .bg-white\/75 { background-color: rgba(255,255,255,0.75); }
+    .bg-white\/90 { background-color: rgba(255,255,255,0.9); }
+    .bg-white\/95 { background-color: rgba(255,255,255,0.95); }
+    .bg-white\/70 { background-color: rgba(255,255,255,0.7); }
+    .bg-slate-50\/70 { background-color: rgba(248,250,252,0.7); }
+    .bg-slate-50\/80 { background-color: rgba(248,250,252,0.8); }
+    .bg-slate-950\/40 { background-color: rgba(2,6,23,0.4); }
+    .bg-teal-400\/20 { background-color: rgba(45,212,191,0.2); }
+    .bg-teal-500\/20 { background-color: rgba(20,184,166,0.2); }
+    .bg-slate-950 { background-color: #020617; }
+    .bg-teal-50\/10 { background-color: rgba(240,253,250,0.1); }
+
+    .bg-\[radial-gradient\(circle_at_30\%_20\%2Crgba\(20\2C184\2C166\2C0\.35\)\2Ctransparent_25\%\)2Clinear-gradient\(145deg\2C\#172033_0\%\2C\#0f172a_100\%\)\] {
+      background: radial-gradient(circle at 30% 20%, rgba(20,184,166,0.35), transparent 25%), linear-gradient(145deg, #172033 0%, #0f172a 100%);
+    }
+
+    .blur-3xl { filter: blur(64px); }
+    .backdrop-blur { backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+    .object-cover { object-fit: cover; }
+    .overflow-hidden { overflow: hidden; }
+    .relative { position: relative; }
+    .absolute { position: absolute; }
+    .fixed { position: fixed; }
+    .inset-0 { inset: 0; }
+    .inset-4 { inset: 1rem; }
+    .inset-y-0 { top: 0; bottom: 0; }
+    .top-0 { top: 0; }
+    .left-0 { left: 0; }
+    .left-\[20\%\] { left: 20%; }
+    .left-\[38\%\] { left: 38%; }
+    .top-\[28\%\] { top: 28%; }
+    .top-\[42\%\] { top: 42%; }
+    .top-\[22\%\] { top: 22%; }
+    .right-\[18\%\] { right: 18%; }
+    .bottom-\[20\%\] { bottom: 20%; }
+    .right-\[28\%\] { right: 28%; }
+    .z-50 { z-index: 50; }
+    .pointer-events-none { pointer-events: none; }
+    .transition { transition: color .2s ease, background-color .2s ease, border-color .2s ease; }
+    .transition-all { transition: all .2s ease; }
+    .transition-transform { transition: transform .2s ease; }
+    .duration-200 { transition-duration: .2s; }
+    .duration-300 { transition-duration: .3s; }
+    .transform { transform: var(--tw-transform, none); }
+    .scale-0 { transform: scale(0); }
+    .list-none { list-style: none; }
+    .overflow-x-hidden { overflow-x: hidden; }
+    .min-h-screen { min-height: 100vh; }
+    .block { display: block; }
+
+    /* Icon containers */
+    .icon-square {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 3.25rem;
+      height: 3.25rem;
+      border-radius: 1rem;
+      font-size: 1.125rem;
+      color: #fff;
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+    }
+    .icon-square--sm {
+      width: 2.75rem;
+      height: 2.75rem;
+      font-size: 1.125rem;
+    }
+    .icon-square--xs {
+      width: 2rem;
+      height: 2rem;
+      border-radius: .75rem;
+      font-size: .75rem;
+    }
+    .icon-round {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 9999px;
+      font-size: .75rem;
+    }
+
+    /* Header */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 50;
+      transition: all .3s ease;
+      background: transparent;
+      padding-top: 1.25rem;
+      padding-bottom: 1.25rem;
+    }
+    .nav.scrolled {
+      background: rgba(255,255,255,0.72);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.75);
+      box-shadow: 0 1px 3px 0 rgba(0,0,0,0.08);
+      padding-top: .75rem;
+      padding-bottom: .75rem;
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 80rem;
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+    @media (min-width: 640px) { .nav-inner { padding-left: 1.5rem; padding-right: 1.5rem; } }
+    @media (min-width: 1024px) { .nav-inner { padding-left: 2rem; padding-right: 2rem; } }
+    .nav-logo-link { display: flex; align-items: center; gap: .75rem; }
+    .nav-logo-img {
+      height: 2.5rem;
+      width: 2.5rem;
+      border-radius: 1rem;
+      object-fit: cover;
+      box-shadow: 0 10px 15px -3px rgba(20,184,166,0.25);
+    }
+    .nav-brand {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.125rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #1e293b;
+    }
+    .nav-brand-accent { color: #0d9488; }
+    .nav-sub {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .32em;
+      color: #94a3b8;
+    }
+    .nav-links {
+      display: none;
+      align-items: center;
+      gap: 1.75rem;
+      font-size: .875rem;
+      font-weight: 600;
+      color: #475569;
+    }
+    @media (min-width: 768px) { .nav-links { display: flex; } }
+    .nav-links a { transition: color .2s ease; color: #475569; }
+    .nav-links a:hover { color: #0d9488; }
+    .live-dot {
+      height: .5rem;
+      width: .5rem;
+      border-radius: 9999px;
+      background: #14b8a6;
+      animation: pulse-dot 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    .nav-toggle {
+      display: inline-flex;
+      height: 2.75rem;
+      width: 2.75rem;
+      align-items: center;
+      justify-content: center;
+      border-radius: 9999px;
+      border: 1px solid #e2e8f0;
+      background: #fff;
+      color: #334155;
+      box-shadow: 0 1px 3px 0 rgba(0,0,0,0.08);
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    @media (min-width: 768px) { .nav-toggle { display: none; } }
+    .mobile-menu {
+      display: none;
+      border-top: 1px solid #e2e8f0;
+      background: rgba(255,255,255,0.95);
+      padding: 1rem;
+      box-shadow: 0 1px 3px 0 rgba(0,0,0,0.08);
+    }
+    @media (min-width: 768px) { .mobile-menu { display: none !important; } }
+    .mobile-menu.open { display: block; }
+    .mobile-menu-links { display: flex; flex-direction: column; gap: .75rem; font-size: .875rem; font-weight: 600; color: #475569; }
+    .mobile-menu-links a {
+      border-radius: .75rem;
+      padding: .5rem;
+      transition: color .2s ease, background-color .2s ease;
+      color: #475569;
+    }
+    .mobile-menu-links a:hover { background: #f8fafc; color: #0d9488; }
+    .mobile-menu-links .btn-primary { justify-content: center; padding-top: .625rem; padding-bottom: .625rem; font-size: .875rem; }
+
+    /* FAQ accordion */
+    .faq-panel {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .3s ease;
+      border-top: 1px solid transparent;
+      background: transparent;
+    }
+    .faq-item.open .faq-panel {
+      border-top-color: #f1f5f9;
+      background: rgba(248,250,252,0.5);
+    }
+    .faq-chevron {
+      display: inline-flex;
+      height: 2rem;
+      width: 2rem;
+      flex-shrink: 0;
+      align-items: center;
+      justify-content: center;
+      border-radius: 9999px;
+      border: 1px solid #e2e8f0;
+      background: #f8fafc;
+      color: #64748b;
+      transition: transform .2s ease, background-color .2s ease, color .2s ease, border-color .2s ease;
+    }
+    .faq-item.open .faq-chevron {
+      transform: rotate(180deg);
+      background: #f0fdfa;
+      color: #0d9488;
+      border-color: #99f6e4;
+    }
+    .faq-category-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 9999px;
+      padding: 8px 16px;
+      font-size: .75rem;
+      font-weight: 600;
+      transition: all .2s ease;
+      cursor: pointer;
+      border: 1px solid #e2e8f0;
+      background: #fff;
+      color: #475569;
+      font-family: inherit;
+    }
+    .faq-category-btn:hover { background: #f8fafc; }
+    .faq-category-btn.active {
+      background: #0d9488;
+      color: #fff;
+      border-color: #0d9488;
+      box-shadow: 0 4px 6px -1px rgba(13,148,136,0.2);
+    }
+    .faq-input {
+      width: 100%;
+      border-radius: 1rem;
+      border: 1px solid #e2e8f0;
+      background: #fff;
+      padding: .875rem 2.5rem .875rem 2.75rem;
+      font-size: .875rem;
+      color: #1e293b;
+      box-shadow: 0 1px 3px 0 rgba(0,0,0,0.08);
+      outline: none;
+      transition: border-color .2s ease, box-shadow .2s ease;
+      font-family: inherit;
+    }
+    .faq-input::placeholder { color: #94a3b8; }
+    .faq-input:focus { border-color: #14b8a6; box-shadow: 0 0 0 3px rgba(20,184,166,0.2); }
+    .faq-clear {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      display: flex;
+      align-items: center;
+      padding-right: 1rem;
+      border: 0;
+      background: none;
+      cursor: pointer;
+      font-size: .75rem;
+      font-weight: 600;
+      color: #94a3b8;
+      font-family: inherit;
+    }
+    .faq-clear:hover { color: #475569; }
+    .faq-empty {
+      display: none;
+      border-radius: 1rem;
+      border: 1px dashed #cbd5e1;
+      background: #fff;
+      padding: 3rem;
+      text-align: center;
+      color: #64748b;
+    }
+    #faqList.empty-state .faq-empty { display: block; }
+
+    /* Grids */
+    .grid-stats { display: grid; gap: 1rem; }
+    @media (min-width: 768px) { .grid-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+    .grid-features { display: grid; gap: 1.5rem; margin-top: 3rem; }
+    @media (min-width: 768px) { .grid-features { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (min-width: 1280px) { .grid-features { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+    .grid-steps { position: relative; display: grid; gap: 2rem; padding: 1.5rem; margin-top: 3.5rem; }
+    @media (min-width: 768px) {
+      .grid-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 2.5rem; }
+    }
+    @media (min-width: 1280px) { .grid-steps { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+    .step { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; }
+    @media (min-width: 768px) { .step { align-items: flex-start; text-align: left; } }
+    .grid-ecosystem { display: grid; gap: 1rem; margin-top: 2rem; }
+    @media (min-width: 640px) { .grid-ecosystem { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    .grid-team { display: grid; gap: 1.25rem; margin-top: 3rem; }
+    @media (min-width: 640px) { .grid-team { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (min-width: 1024px) { .grid-team { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+    @media (max-width: 768px) {
+      .timeline-line { display: none; }
+    }
+
+
+    .hero-device-mock {
+      position: relative;
+      border-radius: 32px;
+      background: linear-gradient(160deg, #0f172a 0%, #111827 100%);
+      padding: 16px;
+      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.22);
+    }
+    .hero-device-inner {
+      border-radius: 24px;
+      background: linear-gradient(145deg, #0f172a 0%, #111827 100%);
+      border: 1px solid rgba(255,255,255,0.08);
+      overflow: hidden;
+      padding: 1rem;
+    }
+    @media (min-width: 640px) { .hero-device-inner { padding: 1.25rem; } }
+
+    .cta-section {
+      border-radius: 36px;
+      border: 1px solid #99f6e4;
+      background: linear-gradient(to bottom right, rgba(240,253,250,1), #fff, rgba(240,249,255,1));
+      box-shadow: 0 20px 50px rgba(20,184,166,0.12);
+      padding: 2rem;
+    }
+    @media (min-width: 640px) { .cta-section { padding: 2.5rem; } }
+    @media (min-width: 1024px) { .cta-section { padding: 3rem; } }
+    .cta-inner { display: flex; flex-direction: column; gap: 2rem; }
+    @media (min-width: 1024px) {
+      .cta-inner { flex-direction: row; align-items: flex-end; justify-content: space-between; }
+    }
+  </style>
+</head>
+<body>
+  <header class="relative z-50">
+    <nav id="mainNav" class="nav">
+      <div class="nav-inner">
+        <a href="#top" class="nav-logo-link">
+          <img src="icon.svg" alt="SmartPet logo" class="nav-logo-img" />
+          <div>
+            <div class="nav-brand">PATA <span class="nav-brand-accent">SMART PET TRACKER</span></div>
+            <div class="nav-sub">Telemetry & Track</div>
+          </div>
+        </a>
+
+        <div class="nav-links">
+          <a href="#features">Features</a>
+          <a href="#how-it-works">How It Works</a>
+          <a href="#ecosystem">Ecosystem</a>
+          <a href="#faq">FAQ</a>
+          <a href="#team">Team</a>
+          <a href="app.html">Owner dashboard</a>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <button type="button" id="navToggle" class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+            <i id="navToggleIcon" class="fas fa-bars"></i>
+          </button>
+        </div>
+      </div>
+
+      <div id="mobileMenu" class="mobile-menu" aria-hidden="true">
+        <div class="mobile-menu-links">
+          <a href="#features">Features</a>
+          <a href="#how-it-works">How It Works</a>
+          <a href="#ecosystem">Ecosystem</a>
+          <a href="#faq">FAQ</a>
+          <a href="#team">Team</a>
+          <a href="app.html">Owner dashboard</a>
+
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero-gradient px-section pb-20 pt-32">
+      <div class="container grid-2">
+        <div class="scroll-fade text-center lg:text-left">
+          <div class="mb-5 inline-flex items-center gap-2 rounded-full border border-teal-200/70 bg-white/75 px-4 py-2 text-sm font-medium text-teal-700 shadow-sm">
+            <span class="live-dot" style="height:.625rem; width:.625rem;"></span>
+            Keeping pets safe, one update at a time.
+          </div>
+          <h1 class="font-display text-4xl font-bold leading-[1.05] text-slate-900 sm:text-5xl lg:text-6xl">
+            Smarter pet tracking<br />
+            <span class="bg-gradient-to-r from-teal-500 to-cyan-500 bg-clip-text text-transparent">for families who care.</span>
+          </h1>
+          <p class="mx-auto mt-5 max-w-2xl text-lg leading-8 text-slate-600 lg:mx-0">
+            Follow your pet in real time, protect their health, and connect with your local safety network from one calm, intelligent platform.
+          </p>
+
+          <div class="mt-8 flex flex-wrap items-center justify-center gap-4 lg:justify-start">
+            <a href="#ecosystem" class="btn-primary">
+              <i class="fas fa-map-pin text-sm"></i> Explore the ecosystem
+            </a>
+            <a href="#features" class="btn-secondary">
+              <i class="fas fa-paw text-sm"></i> See key features
+            </a>
+          </div>
+
+          <div class="mt-8 flex flex-wrap items-center justify-center gap-3 text-sm text-slate-500 lg:justify-start">
+            <span class="chip"><i class="fas fa-check-circle text-teal-500"></i> 4.9/5 from pet owners</span>
+            <span class="chip"><i class="fas fa-shield-alt text-sky-500"></i> 99.8% active coverage</span>
+          </div>
+        </div>
+
+        <div class="scroll-fade">
+          <div class="relative mx-auto" style="max-width:520px;">
+
+
+            <div class="hero-device-mock">
+              <div class="device-screen p-4 sm:p-5">
+                <div class="flex items-center justify-between rounded-2xl border border-white/10 bg-white/10 p-3 backdrop-blur">
+                  <div>
+                    <div class="text-[11px] uppercase tracking-[0.3em] text-slate-400">Current pet</div>
+                    <div class="mt-1 font-display text-lg font-semibold text-white">Mochi · 2 years</div>
+                  </div>
+                  <span class="status-pill"><span class="h-2.5 w-2.5 rounded-full bg-teal-500" style="display:inline-block; height:.625rem; width:.625rem; border-radius:9999px; background:#14b8a6;"></span> Online</span>
+                </div>
+
+                <div class="mt-4 grid gap-4" style="grid-template-columns:1.1fr 0.9fr;">
+                  <div class="rounded-2xl border border-white/10 bg-slate-900/80 p-4">
+                    <div class="flex items-center justify-between">
+                      <div class="text-sm font-semibold text-slate-200">Live location</div>
+                      <div class="text-xs uppercase tracking-[0.3em] text-slate-400">Map view</div>
+                    </div>
+                    <div class="mt-4 h-40 rounded-2xl border border-dashed border-white/15 p-3" style="background:radial-gradient(circle at 30% 20%, rgba(20,184,166,0.35), transparent 25%), linear-gradient(145deg, #172033 0%, #0f172a 100%);">
+                      <div class="relative h-full rounded-xl border border-white/10 bg-white/5">
+                        <div class="absolute left-[20%] top-[28%] h-16 w-16 rounded-full border border-teal-400/30"></div>
+                        <div class="absolute left-[38%] top-[42%] h-5 w-5 rounded-full" style="background:#2dd4bf; box-shadow:0 0 0 8px rgba(20,184,166,0.14);"></div>
+                        <div class="absolute right-[18%] top-[22%] h-11 w-11 rounded-full border border-sky-400/30"></div>
+                        <div class="absolute bottom-[20%] right-[28%] h-8 w-8 rounded-full border border-cyan-400/20"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style="display:flex; flex-direction:column; gap:1rem;">
+                    <div class="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur">
+                      <div class="flex items-center justify-between">
+                        <div class="text-sm font-semibold text-slate-100">Health status</div>
+                        <div class="text-xs font-semibold text-teal-300">Stable</div>
+                      </div>
+                      <div class="mt-4 flex items-end gap-2">
+                        <div class="flex-1 rounded-t-xl" style="height:22px; background:linear-gradient(to top, #14b8a6, #22d3ee);"></div>
+                        <div class="flex-1 rounded-t-xl" style="height:40px; background:linear-gradient(to top, #14b8a6, #22d3ee);"></div>
+                        <div class="flex-1 rounded-t-xl" style="height:34px; background:linear-gradient(to top, #14b8a6, #22d3ee);"></div>
+                        <div class="flex-1 rounded-t-xl" style="height:62px; background:linear-gradient(to top, #14b8a6, #22d3ee);"></div>
+                        <div class="flex-1 rounded-t-xl" style="height:48px; background:linear-gradient(to top, #14b8a6, #22d3ee);"></div>
+                      </div>
+                    </div>
+                    <div class="rounded-2xl p-4" style="background:linear-gradient(to bottom right, rgba(20,184,166,0.2), rgba(6,182,212,0.2));">
+                      <div class="flex items-center gap-3">
+                        <div class="icon-round" style="background:rgba(255,255,255,0.15); color:#99f6e4;">
+                          <i class="fas fa-bell text-sm"></i>
+                        </div>
+                        <div>
+                          <div class="text-sm font-semibold text-white">Safe zone active</div>
+                          <div class="text-xs text-slate-300">No movement alerts detected</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="px-section py-8" style="padding-top:2rem; padding-bottom:2rem;">
+      <div class="container grid-stats rounded-[32px] border border-slate-200 bg-white/90 shadow-sm p-4 md:p-6">
+        <div class="rounded-2xl border border-slate-100 bg-slate-50/80 px-5 py-5 text-center" style="display:grid; gap:1rem;">
+          <div class="font-display text-3xl font-bold text-slate-900">24/7</div>
+          <div class="mt-1 text-sm font-medium text-slate-500">Live Protection</div>
+        </div>
+        <div class="rounded-2xl border border-slate-100 bg-slate-50/80 px-5 py-5 text-center" style="display:grid; gap:1rem;">
+          <div class="font-display text-3xl font-bold text-slate-900">99.8%</div>
+          <div class="mt-1 text-sm font-medium text-slate-500">Active Coverage</div>
+        </div>
+        <div class="rounded-2xl border border-slate-100 bg-slate-50/80 px-5 py-5 text-center" style="display:grid; gap:1rem;">
+          <div class="font-display text-3xl font-bold text-slate-900">2.4k+</div>
+          <div class="mt-1 text-sm font-medium text-slate-500">Pet Owners</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="features" class="px-section py-section">
+      <div class="container">
+        <div class="scroll-fade text-center">
+          <div class="text-sm font-semibold uppercase tracking-[0.32em] text-teal-600">Core features</div>
+          <h2 class="mt-3 font-display text-3xl font-bold text-slate-900 sm:text-4xl">Everything needed to protect your pet daily</h2>
+          <p class="mx-auto mt-4 max-w-2xl text-lg text-slate-600">A calm, connected experience that combines location, wellness, alerts, and community support.</p>
+        </div>
+
+        <div class="grid-features">
+          <div class="scroll-fade card-hover rounded-[28px] border border-slate-200 bg-white p-7 shadow-sm">
+            <div class="icon-square bg-gradient-to-br from-teal-500 to-cyan-500"><i class="fas fa-satellite-dish"></i></div>
+            <h3 class="mt-5 font-display text-xl font-semibold text-slate-900">Live GPS Tracking</h3>
+            <p class="mt-3 leading-7 text-slate-600">Pinpoint your pet’s location in real time with instant updates and route history.</p>
+          </div>
+          <div class="scroll-fade card-hover rounded-[28px] border border-slate-200 bg-white p-7 shadow-sm">
+            <div class="icon-square bg-gradient-to-br from-rose-500 to-pink-500"><i class="fas fa-heartbeat"></i></div>
+            <h3 class="mt-5 font-display text-xl font-semibold text-slate-900">Health Insights</h3>
+            <p class="mt-3 leading-7 text-slate-600">Monitor activity, sleep, and wellness markers that help you react sooner.</p>
+          </div>
+          <div class="scroll-fade card-hover rounded-[28px] border border-slate-200 bg-white p-7 shadow-sm">
+            <div class="icon-square bg-gradient-to-br from-amber-500 to-orange-500"><i class="fas fa-bell"></i></div>
+            <h3 class="mt-5 font-display text-xl font-semibold text-slate-900">Smart Alerts</h3>
+            <p class="mt-3 leading-7 text-slate-600">Receive geofence and health notifications the moment your pet needs attention.</p>
+          </div>
+          <div class="scroll-fade card-hover rounded-[28px] border border-slate-200 bg-white p-7 shadow-sm">
+            <div class="icon-square bg-gradient-to-br from-indigo-500 to-violet-500"><i class="fas fa-shield-alt"></i></div>
+            <h3 class="mt-5 font-display text-xl font-semibold text-slate-900">Family Safety</h3>
+            <p class="mt-3 leading-7 text-slate-600">Protect every pet with secure profiles, emergency contacts, and recovery support.</p>
+          </div>
+          <div class="scroll-fade card-hover rounded-[28px] border border-slate-200 bg-white p-7 shadow-sm">
+            <div class="icon-square bg-gradient-to-br from-emerald-500 to-lime-500"><i class="fas fa-users"></i></div>
+            <h3 class="mt-5 font-display text-xl font-semibold text-slate-900">Community Search</h3>
+            <p class="mt-3 leading-7 text-slate-600">Turn neighbors and local helpers into part of your pet’s safety network.</p>
+          </div>
+          <div class="scroll-fade card-hover rounded-[28px] border border-slate-200 bg-white p-7 shadow-sm">
+            <div class="icon-square bg-gradient-to-br from-sky-500 to-blue-500"><i class="fas fa-id-card"></i></div>
+            <h3 class="mt-5 font-display text-xl font-semibold text-slate-900">Pet Profiles</h3>
+            <p class="mt-3 leading-7 text-slate-600">Keep medical history, vaccination records, and care notes in one secure place.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="how-it-works" class="bg-white/70 px-section py-section">
+      <div class="container">
+        <div class="scroll-fade text-center">
+          <div class="text-sm font-semibold uppercase tracking-[0.32em] text-teal-600">How it works</div>
+          <h2 class="mt-3 font-display text-3xl font-bold text-slate-900 sm:text-4xl">A simple flow that turns into daily peace of mind</h2>
+        </div>
+
+        <div class="grid-steps rounded-[32px] border border-slate-200 bg-slate-50/70 shadow-sm">
+          <div class="timeline-line"></div>
+          <div class="step scroll-fade">
+            <div class="mb-4 flex items-center gap-3">
+              <div class="timeline-dot"></div>
+              <div class="text-sm font-semibold uppercase tracking-[0.3em] text-teal-600">Step 1</div>
+            </div>
+            <div class="icon-round w-12 h-12" style="background:#fff; color:#0d9488; box-shadow:0 1px 3px 0 rgba(0,0,0,0.08); width:3rem; height:3rem; font-size:1.125rem;">
+              <i class="fas fa-map-pin"></i>
+            </div>
+            <h3 class="mt-5 font-display text-xl font-semibold text-slate-900">Wear the tracker</h3>
+            <p class="mt-2 leading-7 text-slate-600">A lightweight, waterproof device attaches comfortably to your pet’s collar.</p>
+          </div>
+          <div class="step scroll-fade">
+            <div class="mb-4 flex items-center gap-3">
+              <div class="timeline-dot"></div>
+              <div class="text-sm font-semibold uppercase tracking-[0.3em] text-teal-600">Step 2</div>
+            </div>
+            <div class="icon-round w-12 h-12" style="background:#fff; color:#0d9488; box-shadow:0 1px 3px 0 rgba(0,0,0,0.08); width:3rem; height:3rem; font-size:1.125rem;">
+              <i class="fas fa-mobile-alt"></i>
+            </div>
+            <h3 class="mt-5 font-display text-xl font-semibold text-slate-900">Sync live data</h3>
+            <p class="mt-2 leading-7 text-slate-600">GPS, temperature, and activity signals stream instantly to your app and web dashboard.</p>
+          </div>
+          <div class="step scroll-fade">
+            <div class="mb-4 flex items-center gap-3">
+              <div class="timeline-dot"></div>
+              <div class="text-sm font-semibold uppercase tracking-[0.3em] text-teal-600">Step 3</div>
+            </div>
+            <div class="icon-round w-12 h-12" style="background:#fff; color:#0d9488; box-shadow:0 1px 3px 0 rgba(0,0,0,0.08); width:3rem; height:3rem; font-size:1.125rem;">
+              <i class="fas fa-bell"></i>
+            </div>
+            <h3 class="mt-5 font-display text-xl font-semibold text-slate-900">Act on alerts</h3>
+            <p class="mt-2 leading-7 text-slate-600">Get notified instantly when a pet leaves a safe zone or needs support.</p>
+          </div>
+          <div class="step scroll-fade">
+            <div class="mb-4 flex items-center gap-3">
+              <div class="timeline-dot"></div>
+              <div class="text-sm font-semibold uppercase tracking-[0.3em] text-teal-600">Step 4</div>
+            </div>
+            <div class="icon-round w-12 h-12" style="background:#fff; color:#0d9488; box-shadow:0 1px 3px 0 rgba(0,0,0,0.08); width:3rem; height:3rem; font-size:1.125rem;">
+              <i class="fas fa-users"></i>
+            </div>
+            <h3 class="mt-5 font-display text-xl font-semibold text-slate-900">Recover faster</h3>
+            <p class="mt-2 leading-7 text-slate-600">Share location updates, sightings, and recovery guidance with the community.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="ecosystem" class="px-section py-section">
+      <div class="container grid-2">
+        <div class="scroll-fade rounded-[32px] border border-slate-200 bg-white p-8 shadow-sm sm:p-10">
+          <div class="text-sm font-semibold uppercase tracking-[0.32em] text-teal-600">Connected ecosystem</div>
+          <h2 class="mt-3 font-display text-3xl font-bold text-slate-900">A network built around your pet’s safety</h2>
+          <p class="mt-4 max-w-2xl leading-7 text-slate-600">The platform links the tracker, the app, the cloud, and the people who care so each update feels immediate and useful.</p>
+
+          <div class="grid-ecosystem">
+            <div class="rounded-2xl border border-slate-200 bg-slate-50/80 p-5">
+              <div class="icon-square icon-square--sm bg-gradient-to-br from-teal-500 to-cyan-500 shadow-sm"><i class="fas fa-database"></i></div>
+              <h3 class="mt-4 font-display text-lg font-semibold text-slate-900">Cloud database</h3>
+              <p class="mt-2 text-sm leading-7 text-slate-600">Reliable storage that keeps every location update and health event secure.</p>
+            </div>
+            <div class="rounded-2xl border border-slate-200 bg-slate-50/80 p-5">
+              <div class="icon-square icon-square--sm bg-gradient-to-br from-teal-500 to-cyan-500 shadow-sm"><i class="fas fa-satellite-dish"></i></div>
+              <h3 class="mt-4 font-display text-lg font-semibold text-slate-900">Smart tracker</h3>
+              <p class="mt-2 text-sm leading-7 text-slate-600">Designed for durability, low power use, and stable connectivity.</p>
+            </div>
+            <div class="rounded-2xl border border-slate-200 bg-slate-50/80 p-5">
+              <div class="icon-square icon-square--sm bg-gradient-to-br from-teal-500 to-cyan-500 shadow-sm"><i class="fas fa-heartbeat"></i></div>
+              <h3 class="mt-4 font-display text-lg font-semibold text-slate-900">Veterinary care</h3>
+              <p class="mt-2 text-sm leading-7 text-slate-600">Share health data with vets for faster, more informed decisions.</p>
+            </div>
+            <div class="rounded-2xl border border-slate-200 bg-slate-50/80 p-5">
+              <div class="icon-square icon-square--sm bg-gradient-to-br from-teal-500 to-cyan-500 shadow-sm"><i class="fas fa-users"></i></div>
+              <h3 class="mt-4 font-display text-lg font-semibold text-slate-900">Community users</h3>
+              <p class="mt-2 text-sm leading-7 text-slate-600">Neighbors and volunteers can help when a pet is wandering or missing.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="scroll-fade rounded-[32px] border border-slate-200 bg-slate-900 p-8 text-white shadow-sm sm:p-10">
+          <div class="rounded-3xl border border-white/10 bg-white/10 p-6 backdrop-blur">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="text-sm font-semibold uppercase tracking-[0.3em] text-teal-300">Live status</div>
+                <h3 class="mt-2 font-display text-2xl font-semibold">Neighborhood watch</h3>
+              </div>
+              <span class="status-pill" style="background:rgba(255,255,255,0.1); color:#5eead4;">Active</span>
+            </div>
+            <div class="mt-8 space-y-4" style="display:flex; flex-direction:column; gap:1rem;">
+              <div class="flex items-center gap-3 rounded-2xl border border-white/10 bg-slate-950/40 px-4 py-3 text-sm text-slate-200">
+                <div class="icon-round" style="background:rgba(20,184,166,0.2); color:#5eead4; width:2rem; height:2rem; font-size:.75rem;">
+                  <i class="fas fa-check-circle text-sm"></i>
+                </div>
+                Pet is within the safe perimeter
+              </div>
+              <div class="flex items-center gap-3 rounded-2xl border border-white/10 bg-slate-950/40 px-4 py-3 text-sm text-slate-200">
+                <div class="icon-round" style="background:rgba(20,184,166,0.2); color:#5eead4; width:2rem; height:2rem; font-size:.75rem;">
+                  <i class="fas fa-check-circle text-sm"></i>
+                </div>
+                Two nearby community users can respond instantly
+              </div>
+              <div class="flex items-center gap-3 rounded-2xl border border-white/10 bg-slate-950/40 px-4 py-3 text-sm text-slate-200">
+                <div class="icon-round" style="background:rgba(20,184,166,0.2); color:#5eead4; width:2rem; height:2rem; font-size:.75rem;">
+                  <i class="fas fa-check-circle text-sm"></i>
+                </div>
+                Health data synced with vet profile
+              </div>
+            </div>
+            <div class="mt-8 flex flex-wrap gap-3">
+              <span class="chip" style="background:rgba(255,255,255,0.1); color:#fff; border:1px solid rgba(255,255,255,0.1);">Live GPS updates</span>
+              <span class="chip" style="background:rgba(255,255,255,0.1); color:#fff; border:1px solid rgba(255,255,255,0.1);">Recovery support</span>
+              <span class="chip" style="background:rgba(255,255,255,0.1); color:#fff; border:1px solid rgba(255,255,255,0.1);">Health logs</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" class="px-section py-section">
+      <div class="container" style="max-width:64rem;">
+        <div class="scroll-fade text-center">
+          <div class="text-sm font-semibold uppercase tracking-[0.32em] text-teal-600">Frequently Asked Questions</div>
+          <h2 class="mt-3 font-display text-3xl font-bold text-slate-900 sm:text-4xl">Everything you need to know about PATA Smart Pet Tracker</h2>
+          <p class="mx-auto mt-4 max-w-2xl text-lg text-slate-600">
+            Find answers on real-time GPS tracking, telemetry sensors, battery life, geofencing, and account privacy.
+          </p>
+        </div>
+
+        <!-- Search & Filter Bar -->
+        <div class="scroll-fade mt-10 space-y-6" style="display:flex; flex-direction:column; gap:1.5rem;">
+          <div class="relative mx-auto max-w-xl">
+            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
+              <i class="fas fa-search text-sm"></i>
+            </div>
+            <input
+              type="text"
+              id="faqSearch"
+              autocomplete="off"
+              placeholder="Search FAQ by keyword (e.g., GPS, battery, safe zone, privacy)..."
+              class="faq-input"
+            />
+            <button type="button" id="faqClear" class="faq-clear" style="display:none;">Clear</button>
+          </div>
+
+          <div class="flex flex-wrap items-center justify-center gap-2">
+            <button type="button" class="faq-category-btn active" data-category="all">
+              <i class="fas fa-question-circle text-xs"></i> All Questions
+            </button>
+            <button type="button" class="faq-category-btn" data-category="telemetry">
+              <i class="fas fa-satellite-dish text-xs"></i> Tracking & Telemetry
+            </button>
+            <button type="button" class="faq-category-btn" data-category="hardware">
+              <i class="fas fa-battery-three-quarters text-xs"></i> Hardware & Battery
+            </button>
+            <button type="button" class="faq-category-btn" data-category="alerts">
+              <i class="fas fa-bell text-xs"></i> Geofencing & Alerts
+            </button>
+            <button type="button" class="faq-category-btn" data-category="privacy">
+              <i class="fas fa-lock text-xs"></i> Security & Plans
+            </button>
+          </div>
+        </div>
+
+        <!-- FAQ Accordion List -->
+        <div id="faqList" class="scroll-fade mt-8 space-y-4 has-results" style="display:flex; flex-direction:column; gap:1rem;">
+          <div class="faq-empty">
+            <i class="fas fa-question-circle mx-auto mb-2 text-slate-400" style="display:block; height:2rem; width:2rem; font-size:2rem; color:#94a3b8;"></i>
+            <p class="text-base font-semibold text-slate-700" id="faqEmptyTitle">No questions found matching ""</p>
+            <p class="mt-1 text-sm text-slate-500">Try adjusting your search terms or category filter.</p>
+            <button type="button" id="faqReset" class="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-teal-600 hover:text-teal-700" style="background:none; border:0; cursor:pointer; font-family:inherit;">
+              <i class="fas fa-undo text-xs"></i> Reset filters
+            </button>
+          </div>
+        </div>
+
+        <!-- FAQ Footer Support Callout -->
+        <div class="scroll-fade mt-12 rounded-3xl border border-teal-100 bg-teal-50/80 p-6 text-center sm:p-8 shadow-sm" style="background:linear-gradient(to right, rgba(240,253,250,0.8), #fff, rgba(240,249,255,0.8));">
+          <h3 class="font-display text-xl font-bold text-slate-900">Still have questions about pet telemetry?</h3>
+          <p class="mt-2 text-sm text-slate-600 max-w-xl mx-auto">
+            Our technical support and veterinary telemetry team is available 24/7 to help you choose the right tracking setup for your pets.
+          </p>
+          <div class="mt-5 flex justify-center gap-3">
+            <a href="#team" class="btn-primary text-sm py-2.5 px-5">
+              <i class="fas fa-users text-xs"></i> Contact Telemetry Support
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="team" class="bg-white/70 px-section py-section">
+      <div class="container" style="max-width:80rem;">
+        <div class="scroll-fade text-center">
+          <div class="text-sm font-semibold uppercase tracking-[0.32em] text-teal-600">Smart GPS Pet Tracker Team</div>
+          <h2 class="mt-3 font-display text-3xl font-bold text-slate-900 sm:text-4xl">Built by people who care about every detail</h2>
+        </div>
+
+        <div class="grid-team" id="teamGrid">
+          <!-- Team members rendered by script -->
+        </div>
+      </div>
+    </section>
+
+    <section class="px-section py-section">
+      <div class="container" style="max-width:80rem;">
+        <div class="scroll-fade cta-section">
+          <div class="cta-inner">
+            <div class="max-w-2xl">
+              <div class="text-sm font-semibold uppercase tracking-[0.32em] text-teal-600">Ready to begin?</div>
+              <h2 class="mt-3 font-display text-3xl font-bold text-slate-900 sm:text-4xl">Bring calm, connected protection to your pet’s everyday life.</h2>
+              <p class="mt-4 text-lg leading-8 text-slate-600">Launch your pet’s digital safety network today and give your family a stronger sense of confidence and care.</p>
+            </div>
+
+            <div class="flex flex-wrap gap-3">
+              <a href="#top" class="btn-primary">Start exploring <i class="fas fa-arrow-right text-sm"></i></a>
+              <a href="#team" class="btn-secondary">Meet the team</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-slate-200 bg-slate-950 px-section py-8 text-sm text-slate-400">
+    <div class="container" style="max-width:80rem;">
+      <!-- Partner logos -->
+      <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:2rem; margin-bottom:1.5rem; padding-bottom:1.5rem; border-bottom:1px solid rgba(255,255,255,0.1);">
+        <img src="jhub-logo.jpg" alt="JHUB Africa" style="height:50px; border-radius:8px; background:#fff; padding:4px 8px;" />
+        <img src="jkuat-logo.jpg" alt="JKUAT" style="height:55px; border-radius:8px; background:#fff; padding:4px;" />
+      </div>
+      <div style="text-align:center; margin-bottom:1.5rem; font-size:.9rem; color:#94a3b8; font-weight:500;">
+        Powered by <span style="color:#14b8a6; font-weight:700;">JHUB Africa</span> in partnership with <span style="color:#14b8a6; font-weight:700;">JKUAT</span>
+      </div>
+      <div style="display:flex; flex-wrap:wrap; gap:.75rem; align-items:center; justify-content:space-between;">
+        <div>© 2026 PATA Smart Pet Tracker. Built for safer, calmer pet care.</div>
+        <div style="display:flex; gap:1.25rem;">
+          <a href="#" style="transition:color .2s; color:#94a3b8;" onmouseover="this.style.color='#2dd4bf'" onmouseout="this.style.color='#94a3b8'">Privacy</a>
+          <a href="#" style="transition:color .2s; color:#94a3b8;" onmouseover="this.style.color='#2dd4bf'" onmouseout="this.style.color='#94a3b8'">Terms</a>
+          <a href="#" style="transition:color .2s; color:#94a3b8;" onmouseover="this.style.color='#2dd4bf'" onmouseout="this.style.color='#94a3b8'">Contact</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      'use strict';
+
+      /* ---------- Navigation ---------- */
+      var nav = document.getElementById('mainNav');
+      var navToggle = document.getElementById('navToggle');
+      var navToggleIcon = document.getElementById('navToggleIcon');
+      var mobileMenu = document.getElementById('mobileMenu');
+
+      window.addEventListener('scroll', function () {
+        if (window.scrollY > 30) {
+          nav.classList.add('scrolled');
+        } else {
+          nav.classList.remove('scrolled');
+        }
+      }, { passive: true });
+
+      function setMenuOpen(open) {
+        if (open) {
+          mobileMenu.classList.add('open');
+          mobileMenu.setAttribute('aria-hidden', 'false');
+          navToggleIcon.className = 'fas fa-times';
+          navToggle.setAttribute('aria-expanded', 'true');
+        } else {
+          mobileMenu.classList.remove('open');
+          mobileMenu.setAttribute('aria-hidden', 'true');
+          navToggleIcon.className = 'fas fa-bars';
+          navToggle.setAttribute('aria-expanded', 'false');
+        }
+      }
+
+      navToggle.addEventListener('click', function () {
+        setMenuOpen(!mobileMenu.classList.contains('open'));
+      });
+
+      mobileMenu.querySelectorAll('a').forEach(function (link) {
+        link.addEventListener('click', function () { setMenuOpen(false); });
+      });
+
+      document.addEventListener('click', function (e) {
+        if (!mobileMenu.classList.contains('open')) return;
+        if (!nav.contains(e.target)) setMenuOpen(false);
+      });
+
+      /* ---------- Scroll reveal ---------- */
+      var fadeElements = Array.prototype.slice.call(document.querySelectorAll('.scroll-fade'));
+      if (fadeElements.length) {
+        var observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
+        fadeElements.forEach(function (el) { observer.observe(el); });
+
+        // Also observe elements added to the DOM later (e.g., team cards)
+        var domObserver = new MutationObserver(function (mutations) {
+          mutations.forEach(function (mutation) {
+            mutation.addedNodes.forEach(function (node) {
+              if (node.nodeType !== 1) return;
+              if (node.classList && node.classList.contains('scroll-fade')) {
+                observer.observe(node);
+              }
+              node.querySelectorAll('.scroll-fade').forEach(function (el) { observer.observe(el); });
+            });
+          });
+        });
+        domObserver.observe(document.body, { childList: true, subtree: true });
+      }
+
+      /* ---------- FAQ ---------- */
+      var faqCategories = [
+        { id: 'all', label: 'All Questions', icon: 'fa-question-circle' },
+        { id: 'telemetry', label: 'Tracking & Telemetry', icon: 'fa-satellite-dish' },
+        { id: 'hardware', label: 'Hardware & Battery', icon: 'fa-battery-three-quarters' },
+        { id: 'alerts', label: 'Geofencing & Alerts', icon: 'fa-bell' },
+        { id: 'privacy', label: 'Security & Plans', icon: 'fa-lock' }
+      ];
+
+      var faqs = [
+        {
+          id: 0,
+          category: 'telemetry',
+          question: 'How does live GPS tracking and telemetry streaming work?',
+          answer: 'Our smart collar tracker combines high-precision GPS satellite positioning with multi-network cellular IoT telemetry. Location, speed, and motion sensors continuously record your pet’s activity and stream real-time updates directly to your cloud dashboard and mobile app with sub-meter accuracy.'
+        },
+        {
+          id: 1,
+          category: 'telemetry',
+          question: 'What pet telemetry metrics are monitored beyond GPS location?',
+          answer: 'In addition to real-time coordinates, our telemetry engine records daily activity duration, play vs. rest cycles, sleep quality indices, ambient collar temperature, and movement variance to help detect early health anomalies before symptoms appear.'
+        },
+        {
+          id: 2,
+          category: 'hardware',
+          question: 'How long does the tracker battery last on a single charge?',
+          answer: 'With adaptive power management, the tracker lasts 5 to 7 days under normal usage. The device automatically switches to low-power Wi-Fi pinging when your pet is resting at home and boosts satellite telemetry updates during active outdoor excursions. Recharging takes under 60 minutes with magnetic fast charging.'
+        },
+        {
+          id: 3,
+          category: 'hardware',
+          question: 'Is the tracking collar waterproof and durable for active pets?',
+          answer: 'Yes. The hardware features an IP68 waterproof and dustproof rating, allowing it to withstand swimming, heavy rain, and mud. Built from ultra-lightweight aircraft-grade polymer, it weighs under 32g and attaches securely to any standard pet collar or harness.'
+        },
+        {
+          id: 4,
+          category: 'alerts',
+          question: 'How do virtual safe zones (geofencing) and escape alerts work?',
+          answer: 'You can draw customizable safe zones (e.g. yard, park, daycare) directly on the interactive map. If your pet crosses a boundary, instant push notifications, SMS alerts, and app popups are sent to your phone within seconds.'
+        },
+        {
+          id: 5,
+          category: 'alerts',
+          question: 'What happens in Community Search mode if my pet is lost?',
+          answer: 'Activating Community Search creates an emergency telemetry broadcast. Nearby opt-in pet owners, neighbors, and local shelter partners receive real-time location alerts, a digital pet profile with medical details, and live sighting updates to accelerate recovery.'
+        },
+        {
+          id: 6,
+          category: 'privacy',
+          question: 'Are there monthly subscription plans required for telemetry data?',
+          answer: 'Yes, cellular telemetry requires an active network data plan to transmit live coordinates worldwide without relying on short-range Bluetooth. We offer flexible monthly and annual plans with zero long-term contracts and automatic SIM provisioning across top cellular carriers.'
+        },
+        {
+          id: 7,
+          category: 'privacy',
+          question: 'How safe and private is my pet’s location history?',
+          answer: 'All telemetry data transmitted between the tracker, cloud backend, and your mobile devices is encrypted with AES-256 security. Your pet’s location data and historical logs are strictly private and accessible only by you and caregivers you explicitly authorize.'
+        }
+      ];
+
+      var faqCategory = 'all';
+      var faqSearch = '';
+      var openFaq = 0;
+      var faqList = document.getElementById('faqList');
+      var faqSearchInput = document.getElementById('faqSearch');
+      var faqClearBtn = document.getElementById('faqClear');
+      var faqEmptyTitle = document.getElementById('faqEmptyTitle');
+      var faqResetBtn = document.getElementById('faqReset');
+
+      function getInitials(name) {
+        if (!name) return '?';
+        var parts = name.trim().split(' ');
+        if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
+        return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+      }
+
+      function renderFaqs() {
+        var trimmedSearch = faqSearch.trim().toLowerCase();
+        var filtered = faqs.filter(function (faq) {
+          var matchesCategory = faqCategory === 'all' || faq.category === faqCategory;
+          var matchesSearch = trimmedSearch === '' ||
+            faq.question.toLowerCase().indexOf(trimmedSearch) !== -1 ||
+            faq.answer.toLowerCase().indexOf(trimmedSearch) !== -1;
+          return matchesCategory && matchesSearch;
+        });
+
+        faqList.classList.toggle('empty-state', filtered.length === 0);
+        faqEmptyTitle.textContent = 'No questions found matching "' + faqSearch.trim() + '"';
+
+        // Remove old faq items (keep the .faq-empty placeholder)
+        faqList.querySelectorAll('.faq-item').forEach(function (el) { el.remove(); });
+
+        var emptyEl = faqList.querySelector('.faq-empty');
+
+        filtered.forEach(function (faq) {
+          var isOpen = openFaq === faq.id;
+          var item = document.createElement('div');
+          item.className = 'faq-item card-hover rounded-2xl border border-slate-200 bg-white shadow-sm transition-all' + (isOpen ? ' open' : '');
+          item.dataset.faqId = faq.id;
+          item.innerHTML =
+            '<button type="button" class="faq-question w-full" aria-expanded="' + isOpen + '" style="display:flex; width:100%; align-items:center; justify-content:space-between; gap:1rem; padding:1.25rem 1.5rem; text-align:left; font-family:Space Grotesk, sans-serif; font-size:1.125rem; font-weight:600; color:#0f172a; background:none; border:0; cursor:pointer; font-family:inherit;">' +
+              '<span class="flex items-center gap-3">' +
+                '<span class="icon-square icon-square--xs" style="background:#f0fdfa; color:#0d9488;"><i class="fas fa-question-circle"></i></span>' +
+                faq.question +
+              '</span>' +
+              '<span class="faq-chevron"><i class="fas fa-chevron-down text-xs"></i></span>' +
+            '</button>' +
+            '<div class="faq-panel" style="' + (isOpen ? 'max-height:320px;' : '') + '">' +
+              '<div class="px-6 py-5" style="padding-left:1.5rem; padding-right:1.5rem; padding-top:1.25rem; padding-bottom:1.25rem;">' +
+                '<p style="color:#475569; line-height:1.625;">' + faq.answer + '</p>' +
+                '<div class="mt-4 flex items-center justify-between border-t border-slate-200/60 pt-3 text-xs text-slate-400" style="display:flex; align-items:center; justify-content:space-between; border-top:1px solid rgba(226,232,240,0.6); padding-top:.75rem; font-size:.75rem; color:#94a3b8;">' +
+                  '<span class="inline-flex items-center gap-1.5 uppercase font-semibold tracking-wider text-teal-700 bg-teal-50 px-2.5 py-1 rounded-md" style="display:inline-flex; align-items:center; gap:.375rem; text-transform:uppercase; font-weight:600; letter-spacing:.05em; color:#0f766e; background:#f0fdfa; padding:.25rem .625rem; border-radius:.375rem; font-size:.75rem;">' +
+                    '<i class="fas fa-check-circle text-[10px]" style="font-size:10px;"></i> Verified Telemetry Info' +
+                  '</span>' +
+                  '<span>Was this helpful?</span>' +
+                '</div>' +
+              '</div>' +
+            '</div>';
+          // Insert before the empty placeholder so the placeholder stays at the end
+          faqList.insertBefore(item, emptyEl);
+
+          var btn = item.querySelector('.faq-question');
+          btn.addEventListener('click', function () {
+            var wasOpen = item.classList.contains('open');
+            // Close all
+            faqList.querySelectorAll('.faq-item').forEach(function (other) {
+              other.classList.remove('open');
+              var panel = other.querySelector('.faq-panel');
+              if (panel) panel.style.maxHeight = '0';
+              var q = other.querySelector('.faq-question');
+              if (q) q.setAttribute('aria-expanded', 'false');
+            });
+            if (!wasOpen) {
+              openFaq = faq.id;
+              item.classList.add('open');
+              var panel = item.querySelector('.faq-panel');
+              panel.style.maxHeight = panel.scrollHeight + 'px';
+              btn.setAttribute('aria-expanded', 'true');
+            } else {
+              openFaq = null;
+            }
+          });
+        });
+      }
+
+      faqSearchInput.addEventListener('input', function () {
+        faqSearch = faqSearchInput.value;
+        faqClearBtn.style.display = faqSearch ? 'block' : 'none';
+        renderFaqs();
+      });
+
+      faqClearBtn.addEventListener('click', function () {
+        faqSearch = '';
+        faqSearchInput.value = '';
+        faqClearBtn.style.display = 'none';
+        faqSearchInput.focus();
+        renderFaqs();
+      });
+
+      document.querySelectorAll('.faq-category-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          faqCategory = btn.dataset.category;
+          document.querySelectorAll('.faq-category-btn').forEach(function (b) { b.classList.remove('active'); });
+          btn.classList.add('active');
+          renderFaqs();
+        });
+      });
+
+      faqResetBtn.addEventListener('click', function () {
+        faqSearch = '';
+        faqCategory = 'all';
+        faqSearchInput.value = '';
+        faqClearBtn.style.display = 'none';
+        document.querySelectorAll('.faq-category-btn').forEach(function (b) { b.classList.remove('active'); });
+        document.querySelector('.faq-category-btn[data-category="all"]').classList.add('active');
+        renderFaqs();
+      });
+
+      renderFaqs();
+
+      /* ---------- Team ---------- */
+      var team = [
+        { name: 'Dr. Lawrence Nderu', role: 'Project Supervisor / Lead Supervisor', course: 'JKUAT / JHUB Africa', isSupervisor: true },
+        { name: 'David Odhiambo', role: 'Group Leader / Backend', course: 'TIE' },
+        { name: 'Elsy Okado', role: 'Project Manager', course: 'TIE' },
+        { name: 'Mercy Kemunto', role: 'IoT', course: 'EEE' },
+        { name: 'Jude Wogambula Nandala', role: 'Hardware and CAD', course: 'Mechatronics' },
+        { name: 'John Gitau', role: 'Circuit Design and IoT', course: 'ECE' },
+        { name: 'Gideon Barongo', role: 'Communication / Story Teller', course: 'Mass Communication' },
+        { name: 'Almond Korongo', role: 'UI/UX', course: 'Maths and Computer Science' },
+        { name: 'Maulidi Hassan Namte', role: 'Web Developer and Security Engineer', course: 'Mathematics and Computer Science' },
+        { name: 'Joshua Mativo', role: 'Project Manager', course: 'Computer Engineering' },
+        { name: 'Basil Karanja', role: 'Embedded System Engineer and IoT', course: 'Electrical and Electronic Engineering' }
+      ];
+
+      var teamGrid = document.getElementById('teamGrid');
+      team.forEach(function (member) {
+        var card = document.createElement('div');
+        card.className = 'scroll-fade card-hover rounded-[24px] border border-slate-200 bg-white p-6 shadow-sm';
+        var supervisorBadge = member.isSupervisor ? '<span style="display:inline-block; margin-top:.5rem; padding:3px 10px; border-radius:9999px; background:#f0fdfa; border:1px solid #99f6e4; font-size:.7rem; font-weight:700; color:#0f766e; text-transform:uppercase; letter-spacing:.05em;">Supervisor</span>' : '';
+        card.innerHTML =
+          '<div style="display:flex; align-items:center; gap:1rem;">' +
+            '<div class="icon-square" style="width:3.5rem; height:3.5rem; min-width:3.5rem; border-radius:1rem; background:linear-gradient(to bottom right,' + (member.isSupervisor ? '#1e40af, #7c3aed' : '#14b8a6, #06b6d4') + '); font-family:Space Grotesk, sans-serif; font-size:1.125rem; font-weight:600; color:#fff; display:flex; align-items:center; justify-content:center;">' +
+              getInitials(member.name) +
+            '</div>' +
+            '<div>' +
+              '<div style="font-family:Space Grotesk, sans-serif; font-size:1.125rem; font-weight:600; color:#0f172a;">' + member.name + '</div>' +
+              '<div style="margin-top:.25rem; font-size:.85rem; font-weight:600; color:#0f766e;">' + member.role + '</div>' +
+              '<div style="margin-top:.15rem; font-size:.8rem; color:#64748b;">' + member.course + '</div>' +
+              supervisorBadge +
+            '</div>' +
+          '</div>';
+        teamGrid.appendChild(card);
+      });
+    })();
+  </script>
+</body>
+</html>
