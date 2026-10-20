@@ -3,34 +3,78 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#102b27">
-  <meta name="description" content="Explore the SmartPet browser demo for pet profiles and illustrative tracker readings.">
+  <meta name="theme-color" content="#143c31">
+  <meta name="description" content="Explore the SmartPet browser demo for local pet profiles and illustrative tracker readings.">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icon-180.png">
-  <title>SmartPet · Pet care dashboard</title>
-  <style>
-    :root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#172b28;background:#f5f7f4;font-synthesis:none;text-rendering:optimizeLegibility}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 8% 0%,#edf5ef 0,transparent 32%),#f5f7f4}.wrap{max-width:1050px;margin:auto;padding:24px}.bar{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e2e9e2;padding:8px 0 20px}.brand{display:flex;gap:10px;align-items:center;color:#172b28;font-weight:800;font-size:20px}.mark{height:36px;width:36px;display:grid;place-items:center;border-radius:12px;background:#173e35;color:#ccf1dc}.button{display:inline-flex;text-decoration:none;border-radius:12px;padding:12px 17px;background:#246b59;color:#fff;font-weight:700}.hero{padding:88px 0 60px;max-width:730px}.eyebrow{font-size:11px;letter-spacing:.16em;color:#5d8c78;font-weight:800}.hero h1{font-size:clamp(38px,7vw,66px);letter-spacing:-.05em;line-height:1.03;margin:15px 0}.hero p{font-size:18px;line-height:1.65;color:#65766f;max-width:650px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:10px 0 55px}.card{background:#fff;border:1px solid #e7ece7;border-radius:18px;padding:22px}.card h2{font-size:17px;margin:0 0 8px}.card p{font-size:13px;line-height:1.6;color:#73817d;margin:0}.note{border-radius:12px;background:#fff2df;padding:15px;color:#805923;font-size:13px;line-height:1.55}footer{border-top:1px solid #e2e9e2;padding:20px 0;color:#89958f;font-size:12px}@media(max-width:600px){.wrap{padding:18px}.hero{padding:62px 0 40px}.hero p{font-size:16px}}
-  </style>
+  <link rel="stylesheet" href="site.css">
+  <title>SmartPet · Pet care, with a little more joy</title>
 </head>
 <body>
-  <div class="wrap">
-    <header class="bar"><a class="brand" href="./"><span class="mark">S</span>SmartPet</a><a class="button" href="app.html">Open dashboard</a></header>
-    <main>
-      <section class="hero">
-        <div class="eyebrow">SMARTPET · BROWSER DEMO</div>
-        <h1>A clear home for your pet’s profile.</h1>
-        <p>Explore the SmartPet dashboard, add local pet profiles, and see how tracker readings and alerts could be presented.</p>
-        <a class="button" href="app.html">Try the dashboard <span aria-hidden="true">→</span></a>
-      </section>
-      <section class="grid" aria-label="About this demo">
-        <article class="card"><h2>Works without an account</h2><p>The demo opens in your browser. Pet profiles you add are stored on this device only.</p></article>
-        <article class="card"><h2>Example readings</h2><p>Dashboard metrics and alerts are clearly marked as illustrative sample content, not live measurements.</p></article>
-        <article class="card"><h2>Installable PWA</h2><p>On supported browsers, install SmartPet from the browser menu. On iPhone or iPad, use Safari’s Share menu and choose Add to Home Screen.</p></article>
-      </section>
-      <p class="note"><strong>Demo limitations:</strong> This site does not connect to a tracker or collect live location, health, or activity data. Device pairing, sign-in, syncing, and real commands are not available. Do not use it for pet safety decisions.</p>
-    </main>
-    <footer>SmartPet · Browser-only demonstration</footer>
-  </div>
+  <header class="site-header shell">
+    <a class="brand" href="./" aria-label="SmartPet home"><span class="brand-mark">🐾</span><span>smartpet<span class="brand-dot">.</span></span></a>
+    <nav class="site-nav" aria-label="Main navigation"><a href="#explore">Explore</a><a href="#how-it-works">How it works</a><a class="nav-cta" href="app.html">Open dashboard <span aria-hidden="true">↗</span></a></nav>
+    <button class="menu-button" id="menu-button" type="button" aria-label="Open navigation" aria-expanded="false">☰</button>
+  </header>
+
+  <main>
+    <section class="hero shell" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="eyebrow-dot"></span> A friendlier way to explore pet care</div>
+        <h1 id="hero-title">Big love.<br><span>Little paws.</span><br>One happy place.</h1>
+        <p class="hero-lead">Meet the SmartPet demo: a playful dashboard for pet profiles, example activity and the moments that make caring feel easier.</p>
+        <div class="hero-actions"><a class="button button-primary" href="app.html">Explore the dashboard <span aria-hidden="true">→</span></a><button class="button button-soft" id="install-open" type="button">Install the app <span aria-hidden="true">＋</span></button></div>
+        <div class="hero-proof"><span class="proof-paw">🐾</span><span>Made for curious pet people</span><span class="proof-separator">·</span><span>No account needed</span></div>
+      </div>
+      <div class="hero-art" aria-label="Illustration of a happy dog and cat">
+        <div class="art-spark spark-one">✦</div><div class="art-spark spark-two">✦</div>
+        <img src="animal-scene.svg" alt="A friendly golden dog and orange cat sitting in a garden" fetchpriority="high">
+        <div class="float-card float-card-top"><span class="float-icon">☀️</span><span><strong>Good day energy</strong><small>Just here to say hi</small></span></div>
+        <div class="float-card float-card-bottom"><span class="float-icon heart">♡</span><span><strong>Care, made joyful</strong><small>Every nose, whisker & wag</small></span></div>
+      </div>
+      <div class="hero-bottom"><span>Scroll to explore</span><span class="scroll-line"></span><span>01 / 03</span></div>
+    </section>
+
+    <section class="explore shell" id="explore" aria-labelledby="explore-title">
+      <div class="section-heading"><div><div class="eyebrow">A LITTLE SOMETHING FOR EVERYONE</div><h2 id="explore-title">Pick a pal. <span>See a story.</span></h2></div><p>Tap a companion to change the sample card. These are playful examples, not live readings.</p></div>
+      <div class="pet-explorer">
+        <div class="pet-switcher" role="group" aria-label="Choose a sample companion">
+          <button class="pet-choice active" type="button" data-pet="momo" aria-pressed="true"><span class="choice-emoji">🐕</span><span><strong>Momo</strong><small>The happy hiker</small></span><span class="choice-arrow">↗</span></button>
+          <button class="pet-choice" type="button" data-pet="luna" aria-pressed="false"><span class="choice-emoji">🐈</span><span><strong>Luna</strong><small>The window watcher</small></span><span class="choice-arrow">↗</span></button>
+          <button class="pet-choice" type="button" data-pet="pip" aria-pressed="false"><span class="choice-emoji">🐇</span><span><strong>Pip</strong><small>The garden sprinter</small></span><span class="choice-arrow">↗</span></button>
+        </div>
+        <article class="sample-card" id="sample-card" data-theme="momo" aria-live="polite">
+          <div class="sample-card-top"><span class="sample-label"><span class="sample-pulse"></span> SAMPLE PROFILE</span><span class="sample-date">A little snapshot</span></div>
+          <div class="sample-pet"><div class="sample-avatar" id="sample-avatar">🐕</div><div><h3 id="sample-name">Momo</h3><p id="sample-caption">Ready for a sniffari</p></div><span class="sample-heart">♡</span></div>
+          <div class="sample-metrics"><div class="sample-metric"><span class="metric-icon">✦</span><span class="metric-name">Today’s steps</span><strong id="sample-steps">2,480</strong><small>Illustrative</small></div><div class="sample-metric"><span class="metric-icon warm">☀</span><span class="metric-name">Mood check</span><strong id="sample-mood">Tail-wagging</strong><small>Just for fun</small></div></div>
+          <div class="sample-card-foot"><span>Example values · not measured by a device</span><span aria-hidden="true">✿</span></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="story shell" id="how-it-works" aria-labelledby="story-title">
+      <div class="story-heading"><div class="eyebrow">THOUGHTFUL, SIMPLE, AND STILL GROWING</div><h2 id="story-title">A small demo with <span>room to grow.</span></h2><p>See how the pieces fit together today, then help shape what SmartPet becomes next.</p></div>
+      <div class="story-tabs" role="tablist" aria-label="Explore the demo features">
+        <button class="story-tab active" type="button" role="tab" aria-selected="true" aria-controls="story-panel" data-story="profiles"><span>01</span> Pet profiles</button>
+        <button class="story-tab" type="button" role="tab" aria-selected="false" aria-controls="story-panel" data-story="activity"><span>02</span> Activity cards</button>
+        <button class="story-tab" type="button" role="tab" aria-selected="false" aria-controls="story-panel" data-story="install"><span>03</span> Take it with you</button>
+      </div>
+      <div class="story-panel" id="story-panel" role="tabpanel" aria-live="polite">
+        <div class="story-panel-icon" id="story-icon">🐾</div><div><div class="story-kicker" id="story-kicker">MAKE IT YOURS</div><h3 id="story-panel-title">A spot for every pet.</h3><p id="story-panel-copy">Add pet profiles in the dashboard and switch between them. They stay saved in this browser on this device.</p></div><a href="app.html" class="story-link" aria-label="Open the SmartPet dashboard">Try it <span aria-hidden="true">→</span></a>
+      </div>
+    </section>
+
+    <section class="closing shell">
+      <div class="closing-art" aria-hidden="true"><span>🐾</span><span>🐶</span><span>🐱</span><span>🐾</span></div>
+      <div><div class="eyebrow">YOUR NEXT CLICK IS A PAW PRINT AWAY</div><h2>Come say hello.</h2><p>Open the demo and make a little space for your favorite companion.</p></div>
+      <a class="button button-primary" href="app.html">Meet the dashboard <span aria-hidden="true">→</span></a>
+    </section>
+    <aside class="demo-note shell"><span class="note-icon">ⓘ</span><p><strong>A note about this demo:</strong> No tracker or account is connected. Activity cards use sample values. Pairing and real device commands are unavailable. Pet profiles stay in your browser and are not synced. Please don’t use the demo for pet-safety decisions.</p></aside>
+  </main>
+
+  <footer class="site-footer shell"><a class="brand" href="./"><span class="brand-mark">🐾</span><span>smartpet<span class="brand-dot">.</span></span></a><span>A browser demo made with care.</span><a href="app.html">Open dashboard <span aria-hidden="true">→</span></a></footer>
+  <dialog id="install-dialog" class="install-dialog"><button class="dialog-close" id="install-close" type="button" aria-label="Close">×</button><div class="dialog-paw">🐾</div><div class="eyebrow">SMARTPET, WHERE YOU LIKE IT</div><h2>Keep the demo close.</h2><p id="install-copy">Install SmartPet from your browser menu. On iPhone or iPad, open this page in Safari, tap Share, then choose Add to Home Screen.</p><button class="button button-primary" id="install-confirm" type="button">Got it</button></dialog>
+  <script src="site.js" defer></script>
 </body>
 </html>

@@ -1,26 +1,23 @@
 # SmartPet Progressive Web App
 
-SmartPet is currently published as a **browser-only demonstration PWA**. It does not need an API, database, account, MQTT broker, or tracker to open.
+SmartPet is a browser-only demonstration PWA. It opens without an API, database, account, MQTT broker, or tracker.
 
-## What works in this demo
+## Demo features
 
-- Open the dashboard without signing in.
-- Add and select pet profiles. These are saved in this browser's local storage.
+- Browse an illustrated landing page with interactive sample pet cards and feature tabs.
+- Open the dashboard without signing in; add and select pet profiles saved in the current browser.
 - View clearly labeled illustrative telemetry and alert examples.
-- Install the dashboard as a PWA where the browser supports installation.
-- Open the app shell offline after it has loaded once.
+- Install the dashboard as a PWA where supported, and open its cached shell offline after one visit.
 
-## What is not connected
+## Demo limits
 
-There is no user account, cross-device synchronization, live telemetry, GPS, secure tracker pairing, push alert service, or hardware command. Device buttons only explain that no command was sent. Do not use sample values for pet safety decisions. Browser data is not encrypted or backed up; avoid entering sensitive information.
+There is no account, cross-device sync, live telemetry, GPS, secure tracker pairing, push alert service, or hardware command. Demo readings are examples only. Device action buttons do not send commands. Browser data is not encrypted or backed up; do not enter sensitive information or rely on the demo for pet safety decisions.
 
 ## Publish with GitHub Pages
 
-1. Upload the **contents** of this `smart_pet_web` folder to the root of a public GitHub repository. Keep `index.html`, `app.html`, `app.css`, `app.js`, `manifest.webmanifest`, `service-worker.js`, and all icon files together.
-2. In repository **Settings → Pages**, choose **Deploy from a branch**, select `main` and `/(root)`, then save.
-3. Open the URL GitHub Pages displays. The dashboard is at `/app.html`.
+Upload the **contents** of this folder to the repository root. Keep these files together: `index.html`, `app.html`, `app.css`, `app.js`, `site.css`, `site.js`, `animal-scene.svg`, `paw-pattern.svg`, `manifest.webmanifest`, `service-worker.js`, and the four icon files. Commit to `main`; GitHub Pages deploys from the branch root. The landing page is `/` and the dashboard is `/app.html`.
 
-The site is static and uses relative asset paths, so it works under a GitHub Pages project subpath.
+The site uses relative asset paths, so it works under a GitHub Pages project subpath.
 
 ## Run locally
 
@@ -35,6 +32,6 @@ Then open `http://localhost:8080/`. Service workers require HTTPS or localhost.
 ## Install
 
 - Desktop/Android: use the browser's **Install app** option or menu.
-- iPhone/iPad: open the site in Safari, tap **Share**, then **Add to Home Screen**.
+- iPhone/iPad: open in Safari, tap **Share**, then **Add to Home Screen**.
 
-Pet profile data is saved locally in the browser and is not synchronized. Clearing browser site data removes it.
+Pet profile data stays in the browser and is not synchronized. Clearing browser site data removes it.
